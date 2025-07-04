@@ -16,30 +16,43 @@ document.addEventListener('DOMContentLoaded', () => {
   let currentIndex = 0;
   let clearTimer   = null;
   let lastTerm     = '';
-  // 🔻 1. coloque logo após as outras variáveis
-  let lastWindowWidth = window.innerWidth;
+    // 🐒 1. coloque logo após as outras variáveis de controle
+  let lastWidth  = window.innerWidth;
+  let lastHeight = window.innerHeight;
   
-  // 🔻 2. substitua COMPLETAMENTE o listener de resize por este
+  // 🐒 2. substitua COMPLETAMENTE o window.addEventListener('resize', ...) por isto:
   window.addEventListener('resize', () => {
-    const widthChanged = Math.abs(window.innerWidth - lastWindowWidth) > 120; // margem p/ rotação
-    lastWindowWidth = window.innerWidth;
   
-    /* --- DESKTOP ---------------------------------------------------------------- */
-    if (isDesktop() &&
-        !nav.matches(':hover') &&
-        nav.classList.contains('expanded')) {
-      closeNav();                // comportamento antigo mantido
+    /* ▸ Se o input está focado, é quase certo que foi o teclado
+       virtual que mexeu no viewport.  Ignoramos o evento.          */
+    if (document.activeElement === input) return;
+  
+    /* ▸ Calcula variações de largura e altura */
+    const wDiff = Math.abs(window.innerWidth  - lastWidth);
+    const hDiff = Math.abs(window.innerHeight - lastHeight);
+  
+    /* ▸ Actualiza para o próximo resize */
+    lastWidth  = window.innerWidth;
+    lastHeight = window.innerHeight;
+  
+    /* ========== DESKTOP =================================================== */
+    if (isDesktop()) {
+      if (!nav.matches(':hover') && nav.classList.contains('expanded')) {
+        closeNav();
+      }
+      return;                   // já tratou desktop; sai
     }
   
-    /* --- MOBILE ----------------------------------------------------------------- */
-    // ‑ só fecha quando houver mudança REAL de largura (orientação) E o input não está focado
-    if (!isDesktop() &&
-        widthChanged &&
-        nav.classList.contains('expanded') &&
-        document.activeElement !== input) {
+    /* ========== MOBILE ==================================================== */
+    /* Fechamos SÓ quando houve mudança de largura ≥ 80 px
+       (indica rotação ou split‑screen)                                     */
+    const orientationChanged = wDiff >= 80;
+  
+    if (orientationChanged && nav.classList.contains('expanded')) {
       closeNav();
     }
   });
+
 
   // Backdrop para fechar ao clicar fora
   const backdrop = document.createElement('div');
