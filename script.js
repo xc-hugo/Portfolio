@@ -16,6 +16,30 @@ document.addEventListener('DOMContentLoaded', () => {
   let currentIndex = 0;
   let clearTimer   = null;
   let lastTerm     = '';
+  // 🔻 1. coloque logo após as outras variáveis
+  let lastWindowWidth = window.innerWidth;
+  
+  // 🔻 2. substitua COMPLETAMENTE o listener de resize por este
+  window.addEventListener('resize', () => {
+    const widthChanged = Math.abs(window.innerWidth - lastWindowWidth) > 120; // margem p/ rotação
+    lastWindowWidth = window.innerWidth;
+  
+    /* --- DESKTOP ---------------------------------------------------------------- */
+    if (isDesktop() &&
+        !nav.matches(':hover') &&
+        nav.classList.contains('expanded')) {
+      closeNav();                // comportamento antigo mantido
+    }
+  
+    /* --- MOBILE ----------------------------------------------------------------- */
+    // ‑ só fecha quando houver mudança REAL de largura (orientação) E o input não está focado
+    if (!isDesktop() &&
+        widthChanged &&
+        nav.classList.contains('expanded') &&
+        document.activeElement !== input) {
+      closeNav();
+    }
+  });
 
   // Backdrop para fechar ao clicar fora
   const backdrop = document.createElement('div');
