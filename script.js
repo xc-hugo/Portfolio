@@ -1,70 +1,37 @@
-// script.js
 document.addEventListener('DOMContentLoaded', () => {
-  const nav       = document.getElementById('navbar');
-  const toggle    = document.getElementById('menu-toggle');
-  const input     = document.getElementById('search-input');
-  const btn       = document.getElementById('search-button');
-  const countSpan = document.getElementById('result-count');
-  const links     = document.querySelectorAll('.menu a');
-  const logo      = document.getElementById('logo');
+  /* ============================================================
+     NAVBAR + BUSCA
+  ============================================================ */
+  const nav        = document.getElementById('navbar');
+  const toggleBtn  = document.getElementById('menu-toggle');
+  const searchIn   = document.getElementById('search-input');
+  const searchBtn  = document.getElementById('search-button');
+  const countSpan  = document.getElementById('result-count');
+  const links      = document.querySelectorAll('.menu a');
+  const logo       = document.getElementById('logo');
 
-  // Só ativa hover/timers acima de 600px
+  /* break‑point p/ “desktop” */
   const isDesktop = () => window.matchMedia('(min-width: 601px)').matches;
 
-  let navTimer     = null;
-  let results      = [];
-  let currentIndex = 0;
-  let clearTimer   = null;
-  let lastTerm     = '';
-    // 🐒 1. coloque logo após as outras variáveis de controle
+  let navTimer      = null;
+  let results       = [];
+  let currentIndex  = 0;
+  let clearTimer    = null;
+  let lastTerm      = '';
+
+  /* ————— Proteção contra resize do teclado ————— */
   let lastWidth  = window.innerWidth;
   let lastHeight = window.innerHeight;
-  
-  // 🐒 2. substitua COMPLETAMENTE o window.addEventListener('resize', ...) por isto:
-  window.addEventListener('resize', () => {
-  
-    /* ▸ Se o input está focado, é quase certo que foi o teclado
-       virtual que mexeu no viewport.  Ignoramos o evento.          */
-    if (document.activeElement === input) return;
-  
-    /* ▸ Calcula variações de largura e altura */
-    const wDiff = Math.abs(window.innerWidth  - lastWidth);
-    const hDiff = Math.abs(window.innerHeight - lastHeight);
-  
-    /* ▸ Actualiza para o próximo resize */
-    lastWidth  = window.innerWidth;
-    lastHeight = window.innerHeight;
-  
-    /* ========== DESKTOP =================================================== */
-    if (isDesktop()) {
-      if (!nav.matches(':hover') && nav.classList.contains('expanded')) {
-        closeNav();
-      }
-      return;                   // já tratou desktop; sai
-    }
-  
-    /* ========== MOBILE ==================================================== */
-    /* Fechamos SÓ quando houve mudança de largura ≥ 80 px
-       (indica rotação ou split‑screen)                                     */
-    const orientationChanged = wDiff >= 80;
-  
-    if (orientationChanged && nav.classList.contains('expanded')) {
-      closeNav();
-    }
-  });
 
-
-  // Backdrop para fechar ao clicar fora
+  /* Backdrop que fecha a nav ao clicar fora (mobile) */
   const backdrop = document.createElement('div');
   backdrop.className = 'nav-backdrop';
   backdrop.addEventListener('click', closeNav);
 
-  // Remove apenas os spans de busca, sem tocar nas animações
+  /* ---------- funções utilitárias ---------- */
   function clearHighlights() {
-    document.querySelectorAll('span.search-result, span.highlight').forEach(span => {
-      const textNode = document.createTextNode(span.textContent);
-      span.parentNode.replaceChild(textNode, span);
-    });
+    document.querySelectorAll('span.search-result, span.highlight')
+      .forEach(span => span.replaceWith(document.createTextNode(span.textContent)));
     countSpan.style.display = 'none';
     results = [];
     currentIndex = 0;
@@ -72,16 +39,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function updateSearchAvail() {
     const open = nav.classList.contains('expanded');
-    input.disabled = btn.disabled = !open;
-    if (!open && results.length > 0) clearHighlights();
+    searchIn.disabled = searchBtn.disabled = !open;
+    if (!open && results.length) clearHighlights();
   }
 
-  function showBackdrop() {
-    document.body.appendChild(backdrop);
-  }
-  function hideBackdrop() {
-    if (backdrop.parentNode) backdrop.parentNode.removeChild(backdrop);
-  }
+  function showBackdrop()  { document.body.appendChild(backdrop); }
+  function hideBackdrop()  { backdrop.remove(); }
 
   function expandNav() {
     clearTimeout(navTimer);
@@ -89,81 +52,74 @@ document.addEventListener('DOMContentLoaded', () => {
     showBackdrop();
     updateSearchAvail();
   }
-
   function closeNav() {
     clearTimeout(navTimer);
     nav.classList.remove('expanded');
     hideBackdrop();
-    toggle.blur();
+    toggleBtn.blur();
     updateSearchAvail();
   }
 
-  // Desktop: abre no hover, fecha no mouseleave
+  /* ---------- eventos de navegação ---------- */
   nav.addEventListener('mouseenter', () => {
     if (isDesktop()) expandNav();
   });
   nav.addEventListener('mouseleave', () => {
-    if (isDesktop() && document.activeElement !== input) {
+    if (isDesktop() && document.activeElement !== searchIn) {
       navTimer = setTimeout(closeNav, 2500);
     }
   });
 
-  // Manuseio de foco no campo de busca
-  input.addEventListener('focus', () => {
+  searchIn.addEventListener('focus', () => {
     if (isDesktop()) clearTimeout(navTimer);
-    // Adicione esta linha para evitar que a navbar feche ao focar no input
-    nav.classList.add('expanded');
+    nav.classList.add('expanded');          // garante aberta no desktop
   });
-  input.addEventListener('blur', () => {
+  searchIn.addEventListener('blur', () => {
     if (isDesktop() && !nav.matches(':hover')) {
       navTimer = setTimeout(closeNav, 2500);
     }
   });
 
-  // Botão hambúrguer
-  toggle.addEventListener('click', e => {
+  toggleBtn.addEventListener('click', e => {
     e.preventDefault();
-    clearTimeout(navTimer);
     nav.classList.contains('expanded') ? closeNav() : expandNav();
   });
 
-  // Click no logo
   logo.addEventListener('click', e => {
     if (!nav.classList.contains('expanded')) {
       e.preventDefault();
     } else {
+      e.preventDefault();
       document.getElementById('inicio').scrollIntoView({ behavior: 'smooth' });
       closeNav();
     }
   });
 
-  // Links do menu
   links.forEach(a => {
     a.addEventListener('click', e => {
       if (!nav.classList.contains('expanded')) {
         e.preventDefault();
       } else {
         e.preventDefault();
-        const tgt = document.querySelector(a.getAttribute('href'));
-        if (tgt) tgt.scrollIntoView({ behavior: 'smooth' });
+        document.querySelector(a.getAttribute('href'))?.scrollIntoView({ behavior: 'smooth' });
         closeNav();
       }
     });
   });
 
-  // Procura e envolve ocorrências em <span class="search-result">
+  /* ---------- busca local ---------- */
   function wrapMatches(term) {
     const regex = new RegExp(term.replace(/[-/\\^$*+?.()|[\]{}]/g,'\\$&'), 'gi');
     document.querySelectorAll('main section').forEach(sec => {
       (function traverse(node) {
         if (node.nodeType === Node.TEXT_NODE) {
-          const text = node.textContent;
+          const txt = node.textContent;
           let last = 0, m, found = false;
           const frag = document.createDocumentFragment();
           regex.lastIndex = 0;
-          while ((m = regex.exec(text)) !== null) {
+          while ((m = regex.exec(txt)) !== null) {
             found = true;
-            frag.appendChild(document.createTextNode(text.slice(last, m.index)));
+            frag.appendChild(document.createTextNode(txt.slice(last, m.index)));
             const span = document.createElement('span');
             span.className = 'search-result';
             span.textContent = m[0];
@@ -172,7 +128,7 @@ document.addEventListener('DOMContentLoaded', () => {
             last = m.index + m[0].length;
           }
           if (found) {
-            frag.appendChild(document.createTextNode(text.slice(last)));
+            frag.appendChild(document.createTextNode(txt.slice(last)));
             node.parentNode.replaceChild(frag, node);
           }
         } else if (
@@ -188,7 +144,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function updateCount() {
     if (results.length) {
-      countSpan.textContent = `${currentIndex + 1} de ${results.length}`;
+      countSpan.textContent = `${currentIndex+1} de ${results.length}`;
       countSpan.style.display = 'inline-block';
     } else {
       countSpan.style.display = 'none';
@@ -196,20 +152,20 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function highlightAt(i) {
-    results.forEach(s => s.classList.remove('highlight'));
+    results.forEach(r => r.classList.remove('highlight'));
     currentIndex = (i + results.length) % results.length;
     const sp = results[currentIndex];
     sp.classList.add('highlight');
-    sp.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    sp.scrollIntoView({ behavior:'smooth', block:'center' });
     updateCount();
     clearTimeout(clearTimer);
     clearTimer = setTimeout(() => sp.classList.remove('highlight'), 3000);
   }
 
-  // Executa a busca sem reiniciar animações
   function doSearch() {
-    const term = input.value.trim();
+    const term = searchIn.value.trim();
     if (!term || !nav.classList.contains('expanded')) return;
+
     if (term === lastTerm && results.length) {
       highlightAt(currentIndex + 1);
     } else {
@@ -217,52 +173,60 @@ document.addEventListener('DOMContentLoaded', () => {
       clearHighlights();
       clearTimeout(clearTimer);
       wrapMatches(term);
-      if (results.length) {
-        highlightAt(0);
-      } else {
-        alert(`Nenhuma correspondência para "${term}"`);
-      }
+      results.length ? highlightAt(0)
+                     : alert(`Nenhuma correspondência para “${term}”`);
     }
   }
 
-  // Eventos de busca
-  btn.addEventListener('click', () => {
+  searchBtn.addEventListener('click', () => {
     doSearch();
-    input.focus();
-    clearTimeout(navTimer);
+    searchIn.focus();
     if (isDesktop()) navTimer = setTimeout(closeNav, 2500);
   });
-  input.addEventListener('keydown', e => {
+  searchIn.addEventListener('keydown', e => {
     if (e.key === 'Enter') {
       e.preventDefault();
       doSearch();
-      input.focus();
+      searchIn.focus();
     }
   });
 
-  // Inicialização
+  /* ---------- resize robusto (corrige teclado) ---------- */
+  window.addEventListener('resize', () => {
+    /* IGNORA completamente se o teclado está aberto */
+    if (document.activeElement === searchIn) return;
+
+    const wDiff = Math.abs(window.innerWidth  - lastWidth);
+    const hDiff = Math.abs(window.innerHeight - lastHeight);
+    lastWidth  = window.innerWidth;
+    lastHeight = window.innerHeight;
+
+    /* ----- desktop ----- */
+    if (isDesktop()) {
+      if (!nav.matches(':hover') && nav.classList.contains('expanded')) closeNav();
+      return;
+    }
+
+    /* ----- mobile: só reage a mudança grande de largura (rotação) ----- */
+    if (wDiff >= 80 && nav.classList.contains('expanded')) closeNav();
+  });
+
+  /* init */
   updateSearchAvail();
   clearHighlights();
-
-  // Fecha nav apropriadamente no resize
-  window.addEventListener('resize', () => {
-    if (isDesktop() && !nav.matches(':hover') && nav.classList.contains('expanded')) {
-      closeNav();
-    }
-    if (!isDesktop() && nav.classList.contains('expanded')) {
-      closeNav();
-    }
-  });
 });
 
-// Rodapé interativo
+/* ============================================================
+   RODAPÉ INTERATIVO
+============================================================ */
 document.addEventListener('DOMContentLoaded', () => {
   const footer = document.getElementById('footer');
   const toggle = document.getElementById('footer-toggle');
 
   toggle.addEventListener('click', () => {
     footer.classList.toggle('minimized');
-    toggle.innerText = footer.classList.contains('minimized') ? '' : '';
-    toggle.title = footer.classList.contains('minimized') ? 'Abrir rodapé' : 'Fechar rodapé';
+    toggle.title = footer.classList.contains('minimized')
+      ? 'Abrir rodapé'
+      : 'Fechar rodapé';
   });
 });
