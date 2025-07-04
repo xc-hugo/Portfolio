@@ -1,3 +1,4 @@
+// script.js
 document.addEventListener('DOMContentLoaded', () => {
   /* ============================================================
      NAVBAR + BUSCA
@@ -19,16 +20,19 @@ document.addEventListener('DOMContentLoaded', () => {
   let clearTimer    = null;
   let lastTerm      = '';
 
-  /* ————— Proteção contra resize do teclado ————— */
+  /* ---------- cadeado: impede fechamento enquanto editando ---------- */
+  let navLocked = false;
+
+  /* ---------- proteção contra resize do teclado ---------- */
   let lastWidth  = window.innerWidth;
   let lastHeight = window.innerHeight;
 
   /* Backdrop que fecha a nav ao clicar fora (mobile) */
   const backdrop = document.createElement('div');
   backdrop.className = 'nav-backdrop';
-  backdrop.addEventListener('click', closeNav);
+  backdrop.addEventListener('click', () => closeNav());
 
-  /* ---------- funções utilitárias ---------- */
+  /* ---------- helpers ---------- */
   function clearHighlights() {
     document.querySelectorAll('span.search-result, span.highlight')
       .forEach(span => span.replaceWith(document.createTextNode(span.textContent)));
@@ -43,8 +47,8 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!open && results.length) clearHighlights();
   }
 
-  function showBackdrop()  { document.body.appendChild(backdrop); }
-  function hideBackdrop()  { backdrop.remove(); }
+  function showBackdrop() { document.body.appendChild(backdrop); }
+  function hideBackdrop() { backdrop.remove(); }
 
   function expandNav() {
     clearTimeout(navTimer);
@@ -52,7 +56,10 @@ document.addEventListener('DOMContentLoaded', () => {
     showBackdrop();
     updateSearchAvail();
   }
-  function closeNav() {
+
+  /* ◂  fecha só se não estiver “travada” */
+  function closeNav(force = false) {
+    if (!force && navLocked) return;      // respeita o cadeado
     clearTimeout(navTimer);
     nav.classList.remove('expanded');
     hideBackdrop();
@@ -66,35 +73,47 @@ document.addEventListener('DOMContentLoaded', () => {
   });
   nav.addEventListener('mouseleave', () => {
     if (isDesktop() && document.activeElement !== searchIn) {
-      navTimer = setTimeout(closeNav, 2500);
+      navTimer = setTimeout(() => closeNav(), 2500);
     }
   });
 
+  /*  foco/desfoque do campo de busca */
   searchIn.addEventListener('focus', () => {
+    navLocked = true;                // ativa cadeado
     if (isDesktop()) clearTimeout(navTimer);
-    nav.classList.add('expanded');          // garante aberta no desktop
+    nav.classList.add('expanded');   // garante aberta
   });
   searchIn.addEventListener('blur', () => {
+    navLocked = false;               // libera cadeado
     if (isDesktop() && !nav.matches(':hover')) {
-      navTimer = setTimeout(closeNav, 2500);
+      navTimer = setTimeout(() => closeNav(), 2500);
     }
   });
 
+  /* botão hamburguer */
   toggleBtn.addEventListener('click', e => {
     e.preventDefault();
-    nav.classList.contains('expanded') ? closeNav() : expandNav();
+    if (nav.classList.contains('expanded')) {
+      navLocked = false;             // permite fechar
+      closeNav(true);
+    } else {
+      expandNav();
+    }
   });
 
+  /* clique no logo */
   logo.addEventListener('click', e => {
     if (!nav.classList.contains('expanded')) {
       e.preventDefault();
     } else {
       e.preventDefault();
       document.getElementById('inicio').scrollIntoView({ behavior: 'smooth' });
-      closeNav();
+      navLocked = false;
+      closeNav(true);
     }
   });
 
+  /* links de navegação */
   links.forEach(a => {
     a.addEventListener('click', e => {
       if (!nav.classList.contains('expanded')) {
@@ -102,7 +121,8 @@ document.addEventListener('DOMContentLoaded', () => {
       } else {
         e.preventDefault();
         document.querySelector(a.getAttribute('href'))?.scrollIntoView({ behavior: 'smooth' });
-        closeNav();
+        navLocked = false;
+        closeNav(true);
       }
     });
   });
@@ -181,7 +201,7 @@ document.addEventListener('DOMContentLoaded', () => {
   searchBtn.addEventListener('click', () => {
     doSearch();
     searchIn.focus();
-    if (isDesktop()) navTimer = setTimeout(closeNav, 2500);
+    if (isDesktop()) navTimer = setTimeout(() => closeNav(), 2500);
   });
   searchIn.addEventListener('keydown', e => {
     if (e.key === 'Enter') {
@@ -191,23 +211,17 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  /* ---------- resize robusto (corrige teclado) ---------- */
+  /* ---------- resize robusto: ignora teclado ---------- */
   window.addEventListener('resize', () => {
-    /* IGNORA completamente se o teclado está aberto */
-    if (document.activeElement === searchIn) return;
-
+    if (navLocked) return;            // teclado aberto → ignora
     const wDiff = Math.abs(window.innerWidth  - lastWidth);
-    const hDiff = Math.abs(window.innerHeight - lastHeight);
     lastWidth  = window.innerWidth;
     lastHeight = window.innerHeight;
 
-    /* ----- desktop ----- */
-    if (isDesktop()) {
-      if (!nav.matches(':hover') && nav.classList.contains('expanded')) closeNav();
-      return;
-    }
+    /* desktop fecha quando mouse sai (já tratado ali em cima) */
+    if (isDesktop()) return;
 
-    /* ----- mobile: só reage a mudança grande de largura (rotação) ----- */
+    /* mobile: só fecha se largura mudou muito (rotação/split) */
     if (wDiff >= 80 && nav.classList.contains('expanded')) closeNav();
   });
 
