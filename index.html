@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <!-- 1. Metadados e Recursos Externos -->
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Meu Portfólio</title>
+  <link rel="icon" href="img/Logo.png" type="image/png"/>
+
+  <!-- Fonte Poppins -->
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+
+  <!-- CSS Principal -->
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+
+  <!-- 2. Navbar + Busca -->
+  <nav id="navbar">
+    <div class="nav-top">
+      <div class="logo">
+        <img id="logo" src="img/Logo.png" alt="Logo"/>
+      </div>
+      <button id="menu-toggle" class="menu-toggle" aria-label="abrir menu">☰</button>
+    </div>
+    <div class="nav-content">
+      <div class="menu">
+        <a href="#inicio"><span class="icone">🏠</span><span class="label">Início</span></a>
+        <a href="#sobre"><span class="icone">ℹ️</span><span class="label">Sobre</span></a>
+        <a href="#quem-sou"><span class="icone">👤</span><span class="label">Quem sou</span></a>
+        <a href="#skills"><span class="icone">💡</span><span class="label">Skills</span></a>
+        <a href="#projetos"><span class="icone">📁</span><span class="label">Projetos</span></a>
+        <a href="#contato"><span class="icone">📞</span><span class="label">Contato</span></a>
+      </div>
+      <div class="search">
+        <input id="search-input" type="text" placeholder="Pesquisar..." disabled/>
+        <button id="search-button" disabled>Pesquisar</button>
+        <span id="result-count" style="display:none;"></span>
+      </div>
+    </div>
+  </nav>
+
+  <!-- 3. Conteúdo Principal -->
+  <main class="content">
+
+    <!-- 3.1 Seção Hero -->
+    <section id="inicio" class="hero">
+      <div class="hero-text">
+        <h1>Olá, eu sou o <span class="highlight">Hugo</span></h1>
+        <p>Um desenvolvedor de jogos eletrônicos com uma alta ambição!</p>
+        <div class="hero-buttons">
+          <a href="#projetos" class="btn-primary">Ver Projetos</a>
+          <a href="#contato" class="btn-secondary">Me Contate</a>
+          <button id="btn-start-quiz" class="btn-primary">Quiz do Jogo</button>
+        </div>
+      </div>
+      <div class="hero-image">
+        <img src="img/perfil.png" alt="Foto de perfil"/>
+      </div>
+    </section>
+
+    <!-- 3.2 Seção Sobre -->
+    <section id="sobre">
+      <h2>Sobre Mim</h2>
+      <div class="sobre-container">
+        <div class="sobre-imagem">
+          <img src="img/perfil2.png" alt="Hugo Oliveira Silva"/>
+        </div>
+        <div class="sobre-texto">
+          <p>
+            Este portfólio compartilha meus projetos, experiências e habilidades no desenvolvimento de jogos eletrônicos, refletindo minha paixão em transformar ideias em experiências imersivas e divertidas.
+          </p>
+          <ul class="habilidades">
+            <li><strong>Linguagens:</strong> Java, Python, C, C++, JavaScript</li>
+            <li><strong>Game Engines:</strong> GameMaker, Godot</li>
+            <li><strong>Web:</strong> HTML5, CSS3, Node.js</li>
+            <li><strong>Banco de Dados:</strong> MySQL</li>
+            <li><strong>IDEs:</strong> NetBeans, VSCode</li>
+            <li><strong>Idiomas:</strong> Espanhol, Inglês</li>
+          </ul>
+          <p>
+            Gosto especialmente de criar jogos divertidos e dinâmicos, com foco em performance e experiência do usuário.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3.3 Seção Quem Sou -->
+    <section id="quem-sou">
+      <h2>Quem sou</h2>
+      <img class="profile" src="img/perfil3.jpg" alt="Foto de perfil"/>
+      <h3>Hugo Oliveira Silva</h3>
+      <p>
+        Sou estudante de Informática no Instituto Federal do Maranhão (IFMA), tenho 16 anos, sou desenvolvedor de jogos e full-stack, com sólida experiência em diversas game engines, linguagens de programação e gestão de bancos de dados. Sou apaixonado por transformar ideias em projetos e apresentações excepcionais, entregando sempre soluções de alta qualidade e foco na experiência do usuário.
+      </p>
+      <div class="social-links">
+        <a href="https://github.com/xc-hugo" target="_blank">GitHub</a> |
+        <a href="https://www.youtube.com/@hugo_jy" target="_blank">YouTube</a> |
+        <a href="https://xchugo.itch.io/" target="_blank">Itch.io</a>
+      </div>
+    </section>
+
+    <!-- 3.4 Seção Skills -->
+    <section id="skills">
+      <h2>Skills</h2>
+      <div class="skills-list">
+        <div class="skill-card">
+          <img src="img/Python.png" alt="Python 3.13"/>
+          <h3>Python 3.13</h3>
+          <p>2 anos de experiência</p>
+        </div>
+        <div class="skill-card">
+          <img src="img/Gamemaker.png" alt="Gamemaker"/>
+          <h3>GameMaker</h3>
+          <p>2 anos de experiência</p>
+        </div>
+        <div class="skill-card">
+          <img src="img/Godot.png" alt="Godot"/>
+          <h3>Godot</h3>
+          <p>2 anos de experiência</p>
+        </div>
+        <div class="skill-card">
+          <img src="img/C.png" alt="C"/>
+          <h3>C</h3>
+          <p>2 anos de experiência</p>
+        </div>
+        <div class="skill-card">
+          <img src="img/Nodejs.png" alt="Node.js"/>
+          <h3>Node.js</h3>
+          <p>1 ano de experiência</p>
+        </div>
+        <div class="skill-card">
+          <img src="img/MySQL.png" alt="MySQL"/>
+          <h3>MySQL</h3>
+          <p>1 ano de experiência</p>
+        </div>
+        <div class="skill-card">
+          <img src="img/NetBeans.png" alt="NetBeans"/>
+          <h3>NetBeans</h3>
+          <p>1 ano de experiência</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3.5 Seção Projetos -->
+    <section id="projetos">
+      <h2>Projetos</h2>
+      <div class="project-list">
+        <div class="project">
+          <div class="project-icon">☠</div>
+          <h3>Mirror Jump</h3>
+          <p>
+            Jogo eletrônico feito em uma competição GameJam internacional do Itch.io realizado em um prazo de 2 dias de desenvolvimento!
+          </p>
+          <ul class="tech-list">
+            <li>GameMaker</li>
+            <li>7º lugar em Ranking geral</li>
+            <li>3º lugar em Apresentação</li>
+            <li>4º lugar em Entretenimento</li>
+          </ul>
+          <a href="https://rhjava.itch.io/mirror-jump" class="btn-tertiary" target="_blank">Ver Projeto</a>
+        </div>
+        <div class="project">
+          <div class="project-icon">📚</div>
+          <h3>English Today</h3>
+          <p>
+            Jogo didático criado para ensino lúdico do inglês, focado em alunos com base no idioma, que integra atividades cotidianas para facilitar o aprendizado!
+          </p>
+          <ul class="tech-list">
+            <li>GameMaker</li>
+            <li>Projeto TCC</li>
+            <li>Didático</li>
+            <li>Lúdico</li>
+          </ul>
+          <a href="https://www.youtube.com/watch?v=_VQLVOyLH1k" class="btn-tertiary" target="_blank">Ver Projeto</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3.6 Seção Contato -->
+    <section id="contato">
+      <h2>Contato</h2>
+      <div class="contact-container"></div>
+      <form class="contact-card form"
+            action="https://formsubmit.co/linverfalhugo@gmail.com"
+            method="POST">
+        <input type="hidden" name="_captcha" value="false"/>
+        <input type="hidden" name="_next" value="https://xc-hugo.github.io/Portfolio/"/>
+
+        <div class="field">
+          <input type="text" name="nome" id="nome" placeholder=" " required/>
+          <label for="nome">Seu nome</label>
+        </div>
+        <div class="field">
+          <input type="email" name="email" id="email" placeholder=" " required/>
+          <label for="email">Seu email</label>
+        </div>
+        <div class="field">
+          <textarea name="mensagem" id="mensagem" rows="5" placeholder=" " required></textarea>
+          <label for="mensagem">Sua mensagem</label>
+        </div>
+        <button type="submit" class="btn-primary">Enviar Mensagem</button>
+      </form>
+    </section>
+
+    <!-- Quiz Minigame -->
+    <section id="quiz" class="hidden">
+      <div class="quiz-overlay"></div>
+      <div class="quiz-modal">
+        <button id="quiz-close" class="quiz-close" aria-label="Fechar quiz">×</button>
+        <header class="quiz-header">
+          <h2 id="quiz-title">Quiz do Portfolio</h2>
+          <span id="quiz-progress">Pergunta 1 de 16</span>
+        </header>
+        <div class="quiz-body">
+          <p id="quiz-question">Questão aparecerá aqui.</p>
+          <ul id="quiz-options" class="quiz-options"></ul>
+        </div>
+        <footer class="quiz-footer">
+          <button id="quiz-restart" class="quiz-btn hidden">Reiniciar</button>
+        </footer>
+      </div>
+    </section>
+
+
+  </main>
+
+  <!-- 4. Rodapé Interativo -->
+  <footer id="footer" class="footer minimized">
+    <div class="footer-toggle" id="footer-toggle" title="Abrir rodapé"></div>
+    <div class="footer-content">
+      <h3>Me encontre em</h3>
+      <p><span class="icon">✉️</span><a href="mailto:linverfalhugo@gmail.com">linverfalhugo@gmail.com</a></p>
+      <p><span class="icon">📞</span><a href="tel:+5599991800441">(99) 99180-0441</a></p>
+      <p><span class="icon">📍</span>Maranhão, Brasil</p>
+      <div class="footer-social">
+        <a href="https://github.com/xc-hugo" target="_blank"><span class="icon">🐙</span> GitHub</a>
+        <a href="https://xchugo.itch.io/" target="_blank"><span class="icon">💼</span> Itch.io</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- 5. Script Principal -->
+  <script src="script.js"></script>
+</body>
+</html>
